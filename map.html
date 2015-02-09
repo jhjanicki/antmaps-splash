@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Ant Maps</title>
+
+    <link rel="icon" type="image/png" href="img/spp.png">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    
+    <!-- Font Awesome CSS -->
+    <link href="css/font-awesome.css" rel="stylesheet">
+    
+    <!-- Bootstrap Social CSS -->
+    <link href="css/bootstrap-social.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+   <!--  <link href="css/full-slider.css" rel="stylesheet"> -->
+    
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis">
+    
+    <style>
+    
+    @import url(http://fonts.googleapis.com/css?family=Dosis);
+    
+    	html, body{
+	    	overflow-x: hidden;
+    	}
+   
+    	
+    	h1{
+	    	font-family: 'Dosis', sans-serif;
+	    	color: #fff;
+	    }
+    	
+    	h2{
+	    	font-family: 'Dosis', sans-serif;
+	    	font-style: italic;
+    	}
+    	h3{
+	    	font-family: 'Dosis', sans-serif;
+	    	color: #fff;
+    	}
+    	p{
+	    	font-family: 'Dosis', sans-serif;
+	    	color: #fff;
+	    }
+    	.navbar-brand{
+	    	font-size: 30px;
+	    	font-family: 'Dosis', sans-serif;
+    	}
+    	
+    	nav li a{
+	    	font-family: 'Dosis', sans-serif;
+    	}
+    	
+    	a{
+	    	cursor: pointer;
+    	}
+    	
+    	.share-button{
+	    	margin: 10px;
+    	}
+    	
+    	#map-wrapper{
+	    	 min-height: 700px; 
+    	}
+    	
+    	#map-nav-background {
+		    position: absolute;
+		    top:0px;
+		    left:0px;
+		    /*display:none;*/
+		    width: 300px;
+		    height: 95%;
+		    background-color: #000;
+		    opacity: 0;
+		    
+		}
+		#map-nav-head {
+		    position: absolute;
+		    top:100px;
+		    left:0px;
+		    width: 200px;
+		    height: 150px;
+		    z-index: 999;
+		    
+		}
+		#map-nav-body {
+		    position: absolute;
+		    top:275px;
+		    left:10px;
+		    overflow-x: hidden;
+		    overflow-y: auto;
+		    width: 200px;
+		    height: 450px;
+		   /*  background-color: #000; */
+		    z-index: 999;
+		}
+		
+		.button-wrap {
+		  width: 100px;
+		  margin: 40px auto 0;
+		  cursor: pointer;
+		}
+		.button-bg {
+		  width: 100%;
+		  height: 100%;
+		  background-color: #ddd;
+		  border-radius: 40px;
+		  padding: 3px;
+		  color:#fff;
+		  transition:all 0.2s ease;
+		}
+		.button-switch {
+		  position:relative;
+		  left:0px;
+		  width: 44px;
+		  height: 44px;
+		
+		  background: url("img/spp.png") no-repeat;
+		  transition:all 0.2s ease;
+		}
+		
+		.button-switch:hover{
+			background: url("img/spp2.png") no-repeat;
+			transition:all 0.2s ease;
+			z-index: 999;
+		}
+		
+		.button-active .button-switch:hover{
+			background: url("img/map2.png") no-repeat;
+			transition:all 0.2s ease;
+			z-index: 999;
+		}
+		
+		
+		.button-active .button-switch { left:50px; }
+		.button-in, 
+		.button-out {
+		  position:absolute; 
+		  transition:all 0.2s ease;
+		  padding-top:15px;
+		  font-size:0.8em;
+		  text-transform:uppercase;
+		  font-weight:bold;
+		}
+		.button-in { margin-left:76px; }
+		.button-out { margin-left:18px; }
+		.button-active .button-out {  }
+		.button-active .button-in {  }
+		.button-active .button-bg { background-color:/* #22bb22 */; }
+		.button-active .button-switch {
+			 background: url("img/map1.png") no-repeat;
+		}
+		
+		#map {
+			
+			width:100%;
+			height: 100%; /* for some reason 100% is 627px */
+		    min-height: 700px;   /* hard fix for now */
+		    background-color: #28303A;
+		    position: absolute;
+		    overflow-x: hidden;
+		    padding-left:100px;
+		    
+		    
+			/*
+margin-top:0px;
+		    margin-left: 0px;
+		    z-index: 0;
+*/
+		}
+		
+		#map svg {
+		    width: 100%;
+		    height: 100%;
+		}
+
+		
+		form,p{
+			padding: 20px;
+		}
+		
+		.graticule {
+		  fill: none;
+		  stroke: /* #777 */ #f8ff82;
+		  stroke-width: .5px;
+		  stroke-opacity: .5;
+		}
+		
+		
+		.gratBackground{
+			fill:#3c8ac0/* #3E454C */;
+			
+		}
+		
+		
+		.gratLines {
+			 fill: none;
+		
+			 stroke: #FFF6E5;
+			 stroke-width: 1px;
+		
+		 }
+		 
+		 .countries{
+			fill:#cacaca;
+			stroke: #ada9a9;
+		    stroke-width: 0.5px;
+			
+		}
+		
+		.countries .active {
+		  fill: black;
+		}
+		
+		.country-borders {
+		  fill: none;
+		  stroke: #FFF6E5;
+		  stroke-width: 1px;
+		  stroke-linejoin: round;
+		  stroke-linecap: round;
+		  pointer-events: none;
+		}
+		
+		.background {
+		  fill: none;
+		  pointer-events: all;
+		  width: 100%;
+		  height: 100%;
+		}
+		
+		.dot{
+			fill:black;
+			z-index: 9999;
+		}
+		
+		.d3-tip {
+		        line-height: 1;
+		        font-weight: bold;
+		        padding: 12px;
+		        background: rgba(0, 0, 0, 0.8);
+		        color: #fff;
+		        border-radius: 10px 10px 10px 10px;
+		        -moz-border-radius: 10px 10px 10px 10px;
+		        -webkit-border-radius: 10px 10px 10px 10px;
+		        /* border: 1px solid #ffffff; */
+		        font-family: 'Dosis', sans-serif;
+		        text-align: center;
+		        
+		        -webkit-box-shadow: 1px 1px 15px 4px rgba(0,0,0,0.75);
+		        -moz-box-shadow: 1px 1px 15px 4px rgba(0,0,0,0.75);
+				box-shadow: 1px 1px 15px 4px rgba(0,0,0,0.75);
+		      }
+		/* Creates a small triangle extender for the tooltip */
+		.d3-tip:after {
+		  box-sizing: border-box;
+		  display: inline;
+		  font-size: 10px;
+		  width: 100%;
+		  line-height: 1;
+		  color: rgba(0, 0, 0, 0.8);
+		  content: "\25BC";
+		  position: absolute;
+		  text-align: center;
+		}
+		
+		.d3-tip.n:after {
+		  margin: -1px 0 0 0;
+		  top: 100%;
+		  left: 0;
+		}
+		
+		
+		
+		/* TOOLTIP */
+		
+		.tooltip-species {
+		  display: block;
+		  font-weight: bold;
+		  font-size: 120%;
+		  width: 100%;
+		  text-align: center;
+		  border-radius: 3px;
+		} 
+		
+		
+		 footer {
+		    margin: 0px;
+		    bottom: 0px;
+		    padding-bottom: 20px;
+		    padding-top:20px;
+		    background-color: black;
+		    color:#fff;
+/*
+		    position: absolute;
+		    height: 50px;
+		    width: 100%;
+*/
+		}   	
+    	
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">AntMaps</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#">About</a>
+                    </li>
+                  
+                    <li>
+                        <a href="#">Contact</a>
+                    </li>
+                    <li>
+                        <div id="facebook-button" class="share-button">
+                            <a class="btn btn-social-icon btn-facebook">
+							    <i class="fa fa-facebook"></i>
+							  </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div id="twitter-button" class="share-button">
+                             <a class="btn btn-social-icon btn-twitter">
+							    <i class="fa fa-twitter"></i>
+							  </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div id="twitter-button" class="share-button">
+                             <a class="btn btn-social-icon btn-reddit">
+							    <i class="fa fa-reddit"></i>
+							  </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    
+    <div id="map-wrapper">
+    
+    		<div id="species-view">
+    		
+			
+    		
+    			<div id="map-nav-background">
+	    		</div>
+	    		<div id="map-nav-head">
+	    			<h3 id="view-title" class="text-center">
+	    				Species View
+	    			</h3>
+	    		  
+	    		  <div class="button-wrap">
+				   
+				    <div class="button-bg">
+				      <div class="button-out"></div>
+				      <div class="button-in"></div>
+				      <div class="button-switch"></div>
+				    </div>
+				  </div>
+	    		
+	    		</div>
+	    		
+	    		<div id="map-nav-body">
+	    			<form id="query">
+						<label> Genus </label>
+						<select id="genus-select" name="genus">
+						<option value="Select-Genus">Select Genus:</option>
+						</select><br>
+						
+						<label> Species </label>
+						<select id="species-select" name="species">
+						<option value="Select-Species">Select Species:</option>
+						</select>
+					</form>
+	    		</div>
+	    		
+	    		<div id="map"></div>
+	    		
+    		</div> <!-- end species view -->
+    		
+    		<div id="diversity-view">
+    		</div>
+    		
+    		
+    		
+    		
+    </div><!-- end map wrapper view -->
+
+  
+
+
+        <!-- Footer -->
+        <footer>
+            <div class="row text-center custom-footer">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; AntMaps 2015</p>
+                </div>
+            </div>
+            <!-- /.row -->
+        </footer>
+
+    
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+
+    <script src="http://underscorejs.org/underscore-min.js"></script>
+
+
+    
+    <script>
+    
+ 		
+	/*  Script to switch views */
+	 
+	$('.button-wrap').on("click", function(){
+	  $(this).toggleClass('button-active');
+	  $('#view-title').html($('#view-title').text() == 'Diversity View' ? 'Species View' : 'Diversity View');
+	});
+
+
+	/*  D3 */
+			 
+			 
+	
+	(function() {
+	// ... my code
+	
+	
+	//manually store json into variable
+	var recordsJSON = {
+	  "records": [
+	  {
+	      "GABI_Acc_Number": "GABI_00862248",
+	      "genus_name_valid": "Azteca",
+	      "species_name_valid": "schumannii dubia",
+	      "subspecies_name_valid": null,
+	      "dec_lat":  38.478518,
+	      "dec_long": -122.852768,
+	      "country": "United States of America",
+	      "bentity_name_2": "Amazonas_Brazil",
+	      "bentity_name_3": "Amazonas_Brazil",
+	      "num_records_in_country":3
+	  },{
+	      "GABI_Acc_Number": "GABI_00862248",
+	      "genus_name_valid": "Azteca",
+	      "species_name_valid": "schumannii dubia",
+	      "subspecies_name_valid": null,
+	      "dec_lat":  -14.232402,
+	      "dec_long": -48.930945,
+	      "country": "Brazil",
+	      "bentity_name_2": "Amazonas_Brazil",
+	      "bentity_name_3": "Amazonas_Brazil",
+	      "num_records_in_country":2
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862249",
+	      "genus_name_valid": "Azteca",
+	      "species_name_valid": "angusticeps",
+	      "subspecies_name_valid": null,
+	      "dec_lat": -14.232402,
+	      "dec_long": -48.930945,
+	      "country": "Brazil",
+	      "bentity_name_2": "Amazonas_Brazil",
+	      "bentity_name_3": "Amazonas_Brazil",
+	      "num_records_in_country":2
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862250",
+	      "genus_name_valid": "Azteca",
+	      "species_name_valid": "trigona mathildae",
+	      "subspecies_name_valid": null,
+	      "dec_lat":  -7.900368,
+	      "dec_long": -76.642808,
+	      "country": "Peru",
+	      "bentity_name_2": "Amazonas_Brazil",
+	      "bentity_name_3": "Amazonas_Brazil",
+	      "num_records_in_country":5
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862251",
+	      "genus_name_valid": "Dorymyrmex",
+	      "species_name_valid": "pyramicus",
+	      "subspecies_name_valid": null,
+	      "dec_lat":  -4.211714,
+	      "dec_long": -65.125266,
+	      "country": "Brazil",
+	      "bentity_name_2": "Amazonas_Brazil",
+	      "bentity_name_3": "Amazonas_Brazil",
+	      "num_records_in_country":2
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862252",
+	      "genus_name_valid": "Myrmelachista",
+	      "species_name_valid": "bambusarum",
+	      "subspecies_name_valid": null,
+	      "dec_lat":  15.814138,
+	      "dec_long": -90.101026,
+	      "country": "Guatemala",
+	      "bentity_name_2": "Amazonas_Brazil",
+	      "bentity_name_3": "Amazonas_Brazil",
+	      "num_records_in_country":1
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862253",
+	      "genus_name_valid": "Tetraponera",
+	      "species_name_valid": "rufonigra",
+	      "subspecies_name_valid": null,
+	      "dec_lat": 25.45,
+	      "dec_long": 81.75,
+	      "country": "India",
+	      "bentity_name_2": "Uttar Pradesh",
+	      "bentity_name_3": "North India",
+	      "num_records_in_country":2
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862254",
+	      "genus_name_valid": "Nylanderia",
+	      "species_name_valid": "fulva",
+	      "subspecies_name_valid": null,
+	      "dec_lat":  22.209500,
+	      "dec_long": -104.813214,
+	      "country": "Mexico",
+	      "bentity_name_2": "Amazonas_Brazil",
+	      "bentity_name_3": "Amazonas_Brazil",
+	      "num_records_in_country":5
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862255",
+	      "genus_name_valid": "Acanthostichus",
+	      "species_name_valid": "brevicornis",
+	      "subspecies_name_valid": null,
+	      "dec_lat": -12.505208,
+	      "dec_long": 135.877153,
+	      "country": "Australia",
+	      "bentity_name_2": "Paraiba",
+	      "bentity_name_3": "Paraiba",
+	      "num_records_in_country":4
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862256",
+	      "genus_name_valid": "Gnamptogenys",
+	      "species_name_valid": "annulata",
+	      "subspecies_name_valid": null,
+	      "dec_lat": -23.517851,
+	      "dec_long": 114.834907,
+	      "country": "Australia",
+	      "bentity_name_2": "Rondonia",
+	      "bentity_name_3": "Rondonia",
+	      "num_records_in_country":4
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862257",
+	      "genus_name_valid": "Neoponera",
+	      "species_name_valid": "commutata",
+	      "subspecies_name_valid": null,
+	      "dec_lat": 23.903550,
+	      "dec_long": 120.409834,
+	      "country": "Taiwan",
+	      "bentity_name_2": "Rondonia",
+	      "bentity_name_3": "Rondonia",
+	      "num_records_in_country":6
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862258",
+	      "genus_name_valid": "Neoponera",
+	      "species_name_valid": "apicalis",
+	      "subspecies_name_valid": null,
+	      "dec_lat": 26.357151,
+	      "dec_long": 127.813789,
+	      "country": "Japan",
+	      "bentity_name_2": "Rondonia",
+	      "bentity_name_3": "Rondonia",
+	      "num_records_in_country":7
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862259",
+	      "genus_name_valid": "Neoponera",
+	      "species_name_valid": "apicalis",
+	      "subspecies_name_valid": null,
+	      "dec_lat": 35.735189,
+	      "dec_long": 139.976251,
+	      "country": "Japan",
+	      "bentity_name_2": "Rondonia",
+	      "bentity_name_3": "Rondonia",
+	      "num_records_in_country":7
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862260",
+	      "genus_name_valid": "Neoponera",
+	      "species_name_valid": "unidentata",
+	      "subspecies_name_valid": null,
+	      "dec_lat":  47.777514,
+	      "dec_long":  32.635253,
+	      "country": "Ukraine",
+	      "bentity_name_2": "Rondonia",
+	      "bentity_name_3": "Rondonia",
+	      "num_records_in_country":9
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862261",
+	      "genus_name_valid": "Neoponera",
+	      "species_name_valid": "villosa",
+	      "subspecies_name_valid": null,
+	      "dec_lat":  44.483665,
+	      "dec_long": 5.305789,
+	      "country": "France",
+	      "bentity_name_2": "Rondonia",
+	      "bentity_name_3": "Rondonia",
+	      "num_records_in_country":10
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862262",
+	      "genus_name_valid": "Neoponera",
+	      "species_name_valid": "moesta",
+	      "subspecies_name_valid": null,
+	      "dec_lat":  42.996899,
+	      "dec_long": -89.364138,
+	      "country": "United States of America",
+	      "bentity_name_2": "Rondonia",
+	      "bentity_name_3": "Rondonia",
+	      "num_records_in_country":3
+	  }, {
+	      "GABI_Acc_Number": "GABI_00862263",
+	      "genus_name_valid": "Pachycondyla",
+	      "species_name_valid": "harpax",
+	      "subspecies_name_valid": null,
+	      "dec_lat":  27.840155,
+	      "dec_long": -81.229957,
+	      "country": "United States of America",
+	      "bentity_name_2": "Rondonia",
+	      "bentity_name_3": "Rondonia",
+	      "num_records_in_country":3
+	  }
+	 ]
+	};
+	
+	console.log(recordsJSON.records[0]);
+	
+	console.log("max");
+	var max = d3.max(recordsJSON.records, function(d) { return +d.num_records_in_country; });
+	console.log(max); 
+	
+	
+	
+	d3.selection.prototype.moveToFront = function() {
+	  return this.each(function(){
+	    this.parentNode.appendChild(this);
+	  });
+	};
+	
+	
+		setMap();
+		loadDropDown();
+		
+	
+	
+	
+	function loadDropDown(){
+	
+			var existing_genera = [];
+			
+			for(var field=0; field<recordsJSON.records.length;field++){
+				
+				
+				//use _.contains to make the genera unique	
+				if(!_.contains(existing_genera, recordsJSON.records[field].genus_name_valid)){
+				  $('#genus-select').append(
+			        $('<option></option>').val(recordsJSON.records[field].genus_name_valid).html(recordsJSON.records[field].genus_name_valid)
+			      );
+			    }
+			      existing_genera.push(recordsJSON.records[field].genus_name_valid);
+			           
+			}
+			 //now we need to only get unique genera
+			 
+			 
+			 $("#genus-select").change(function () {
+			    $('#species-select').empty().append($('<option></option>').val('Select-Species').html('Select Species'));
+			    
+			    var matchVal = $("#genus-select option:selected").text();
+			    
+			    var existing_species=[];
+			    
+			    recordsJSON.records.filter(function (record) {
+			        if (record.genus_name_valid == matchVal) {//if the genus matches
+			        
+			        //and if doens't exist yet...get unique species
+			        	if(!_.contains(existing_species, record.species_name_valid)){
+			            $("#species-select").append($('<option></option>').val(record.species_name_valid).html(record.species_name_valid));
+			            }
+			            
+			            existing_species.push(record.species_name_valid);
+			        }
+			    });
+			});
+	
+	}
+	
+	
+	
+	//store value of genus and species in variables
+	//loop over json data to find the objects with genus and species properties that match
+	//update or call function everytime the drop down menus are selected again
+	function updateResults(){
+		var genus = $('#genus-select').val();
+		var species = $('#species-select').val();	
+		console.log("genus: "+ genus + "and species: "+species);
+		$( "#results" ).text( "Species selected: "+ genus + " "+species );
+		
+		
+		//can filter with underscore
+		var selected_insects = _.filter(recordsJSON.records, function(o) {
+		    return o.genus_name_valid === genus && o.species_name_valid === species;
+		});
+		
+		
+		console.log("selected insects");
+		console.log(selected_insects);
+		
+		/*
+		console.log(selected_insects[0]);
+		console.log(selected_insects[0].genus_name_valid);
+		*/
+	
+		drawPoints(selected_insects);
+		
+		//updateCountryList(selected_insects)
+		//use updateCountryList and updateMapColor to fill countries where species is found
+		
+	}//end updateResults
+	
+	
+	
+	$( "select" ).on( "change", updateResults );
+	updateResults();
+	
+	
+	
+	
+	//sets basemap
+	function setMap(){
+	
+			 width = 1000;
+			 height= 700;
+			 centered=0;
+			
+			 map= d3.select("#map")
+					.append("svg")
+					.attr("id","map");
+					
+			 projection = d3.geo.mercator()
+				    .scale(150)
+				    .center([370, 42])
+				    /* .translate([width / 2, height / 2]) */
+				    .precision(.1);
+				
+					
+				
+				var graticule = d3.geo.graticule()
+				    .step([20, 20]);
+				    
+				 path = d3.geo.path()
+				    			.projection(projection);
+				    			
+					map.append("path")
+					    .datum(graticule)
+					    .attr("class", "graticule")
+					    .attr("d", path);
+				    
+				    var gratBackground=map.append("path")
+				    	.datum(graticule.outline)
+				    	.attr("class","gratBackground")
+				    	.attr("d",path)
+				    	
+				    var gratLines=map.selectAll(".gratLines")
+				    	.data(graticule.lines)
+				    	.enter()
+				    	.append("path")
+				    	.attr("class","gratLines")
+				    	.attr("d",path);
+				    	
+	
+					    
+					drawMap();
+			
+			   	   
+	
+	}//end setMap
+	
+	
+	function drawMap(){
+		/* 	var recolorMap = colorScale(recordsJSON);	 */	
+		
+		
+		
+		 map.append("rect")
+					    .attr("class", "background")
+					    .on("click", clicked);
+					    
+				    g = map.append("g");
+					    //code for click zoom
+					
+			    	
+		    d3.json("data/world.topojson", function(error, data){
+		    
+					   	var worldcountries= g.append("g")
+					      .attr("class","countries")
+					      .selectAll("path")
+					      .data(topojson.feature(data,data.objects.countries).features)
+					      .enter().append("path")
+					      .attr("d", path)
+					      .on("click", clicked);
+					      
+					      
+					
+					    g.append("path")
+					      .datum(topojson.mesh(data,data.objects.countries, function(a, b) { return a !== b; }))
+					      .attr("class", "country-borders")
+					      .attr("d", path);
+					      
+									  	
+					  	
+					  	var allCountries = topojson.feature(data, data.objects.countries).features;
+					  		
+					  		  
+	
+					  		  console.log("allCountries.length");
+					  		  console.log(allCountries.length);//177
+					  		  console.log("recordsJSON.records.length");
+					  		  console.log(recordsJSON.records.length);
+					  		  
+					  		  
+					  	//loop over countries
+					  		  
+					  	for (var a=0; a<allCountries.length;a++){
+					  		var countryName = allCountries[a].properties.sovereignt;
+					    	console.log(countryName);
+					    	
+					  	}
+					  	
+					  	
+					  	
+					   var filtered = _.filter(allCountries, function(a){
+						    
+						    return _.find(recordsJSON.records, function(b){
+						        return b.country === a.properties.sovereignt;
+						    });
+						});
+						
+	
+	
+					  	console.log("filtered");
+					  	console.log(filtered);
+					  	
+					  	var appended = _.each(filtered, function(country) { 
+					  			
+					  			_.each(recordsJSON.records, function(record){
+					  				if(country.properties.sovereignt===record.country ){
+						  				country.properties.num_records_in_country=record.num_records_in_country;
+					  				}
+						  			
+					  			})
+					  		
+					  	 });
+											  
+						console.log("appended");
+						console.log(appended);	
+						
+						//appended is the json of the countries that have records, with the attribute num_records_in_country appended to it
+					  	
+					  	
+					  	
+					  	
+					  	var countries = g.selectAll(".countries")
+								.data(appended)
+								.enter()
+								.append("path")
+								.attr("class","countries")
+								.attr("d",path)
+								.style("fill", function(d) { //color enumeration units
+											console.log("d");
+											console.log(d);
+												return choropleth(d, colorScale());
+											})
+								/* .on("click", clicked) */;
+	
+					  		  
+	
+			   });//end d3.json
+			   
+	
+			   
+			   
+			   function clicked(d) {
+					  var x, y, k;
+					
+					  if (d && centered !== d) {
+					    var centroid = path.centroid(d);
+					    x = centroid[0];
+					    y = centroid[1];
+					    k = 2;
+					    centered = d;
+					  } else {
+					    x = width / 2;
+					    y = height / 2;
+					    k = 1;
+					    centered = null;
+					  }
+					
+					  g.selectAll("path")
+					      .classed("active", centered && function(d) { return d === centered; });
+					
+					  g.transition()
+					      .duration(750)
+					      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+					      .style("stroke-width", 1.5 / k + "px");
+			} //end clicked
+	
+	}
+	
+	
+	
+	function colorScale(){
+		
+		var color = d3.scale.quantile() //designate quantile scale generator
+			.range([
+				"#fcae91",
+				"#fb6a4a",
+				"#de2d26",
+				"#a50f15"
+			]);
+		
+		
+		var max = d3.max(recordsJSON.records, function(d) { return +d.num_records_in_country; });
+			
+			//set min and max data values as domain
+		color.domain([0,max]);
+	
+		//return the color scale generator
+		return color;	
+	
+	};
+	
+	
+	
+	
+	//not yet called
+	function updateMapColor(jsonCountries){
+		d3.selectAll(".countries") //select every province
+			.style("fill", function(d) { //color enumeration units
+				return choropleth(d, colorScale(recordsJSON)); //->
+			})
+			.select("desc") //replace the color text in each province's desc element
+				.text(function(d) {
+					return choropleth(d, colorScale(recordsJSON)); //->
+				});
+	}
+	
+	
+	function choropleth(d, recolorMap){
+		//Get data value
+		var value = d.properties.num_records_in_country; 
+		
+		if (value) {
+			return recolorMap(value);
+		} else {
+			return "#fee5d9";
+		};
+	};
+	
+	
+	
+	//update, enter, exit
+	
+	function drawPoints(selected_insects){
+	
+		var tip = d3.tip()
+		.attr('class', 'd3-tip')
+		.offset([-10, 0])
+		.html(function(d) {
+		    return "<strong><i><span class='tooltip-species'>" +d.genus_name_valid+" "+ d.species_name_valid + "</span></i></strong><br> Total Records in "+ d.country+": "+d.num_records_in_country ;
+		});
+		
+		g.call(tip);
+	
+	
+		
+		var circles = g.selectAll('.dot')
+					.data(selected_insects);
+					
+			
+			//update
+			circles.transition()
+					.duration(2000)
+					.attr("r",6)
+					.attr("cx",function(d){
+						console.log([d.dec_long,d.dec_lat]);
+						return projection([d.dec_long,d.dec_lat])[0];
+					}) 
+					.attr("cy",function(d){
+						return projection([d.dec_long,d.dec_lat])[1];
+					})
+					.style("fill", "black");
+					
+				
+				//enter
+				circles.enter().append("circle")
+						.attr("class","dot")
+						.attr("cx",function(d){
+						console.log([d.dec_long,d.dec_lat]);
+						return projection([d.dec_long,d.dec_lat])[0];
+							}) 
+						.attr("cy",function(d){
+						return projection([d.dec_long,d.dec_lat])[1];
+							})
+						.attr("r",0)
+						.transition()
+						.duration(2000)
+						.attr("r",6);
+				
+				//exit
+				circles.exit()
+						.transition()
+						.duration(2000)
+						.attr("r",0)
+						.remove();
+						
+						
+						
+				circles.on('mouseover.border',function(){
+					d3.select(this)
+					.transition()
+					.duration(2000)
+					.style({
+						'stroke-width':10,
+						'stroke-opacity':0.3,
+						'fill-opacity':1,
+						'stroke':'white'
+					});
+				})
+				
+				.on('mouseout.border',function(){
+					d3.select(this)
+					.transition()
+					.duration(700)
+					.style({
+						'stroke-width':1,
+						'stroke-opacity':1,
+						'fill-opacity':1,
+						'stroke':'black'
+					});
+					
+				
+				})
+				
+				
+				circles
+				.on('mouseover', tip.show)
+				.on('mouseout', tip.hide)
+				.moveToFront();
+				
+				
+				
+						
+						
+				
+	
+		
+		
+	}
+	
+	
+	
+	})();		 
+			 
+			 
+			 
+			 
+    </script>
+
+</body>
+
+</html>
